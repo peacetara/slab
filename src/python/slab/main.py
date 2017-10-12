@@ -63,12 +63,17 @@ def main(args=None):
 	k.unlock(password, filter='sudolikeaboss')
 	#pprint.pprint(k.items)
 	choices=[]
-	for i in k.items:
-		choices.append(i['title'])
-	#print("choices:%s" % pprint.pformat(choices))
-	#c = ''
-	# use applescript to get a choice.
-	c = choice(choices)
+	if len(k.items) == 1:
+		c = k.items[0]['title']
+	else:
+		for i in k.items:
+			choices.append(i['title'])
+		#print("choices:%s" % pprint.pformat(choices))
+		#c = ''
+		# use applescript to get a choice.
+		c = choice(choices)
+		print(">>",c)
+
 	# go through all the sudolikeaboss items and print the password when match found.
 	for i in k.items:
 		if i['title'] == c:
