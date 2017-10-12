@@ -28,3 +28,7 @@ SETUP:
 	Configure a keybinding to run coprocess and point it at this binary
 	something like: /usr/local/bin/slab
 
+HOW it works:
+	This code opens the SQLite data file, filters out only sudolikeaboss entries, builds a list of titles and asks applescript to show you a list of titles to choose from (applescript never sees or interacts with 1password).  After selecting a list, this code then decrypts the 1 entry and outputs the password.
+
+	This code *could* do nasty things and decrypt every single secret, since it knows your master password, but I promise it doesn't :P  See src/python/slab/main.py for what it actually does.

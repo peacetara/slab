@@ -65,7 +65,9 @@ def main(args=None):
 		choices.append(i['title'])
 	#print("choices:%s" % pprint.pformat(choices))
 	#c = ''
+	# use applescript to get a choice.
 	c = choice(choices)
+	# go through all the sudolikeaboss items and print the password when match found.
 	for i in k.items:
 		if i['title'] == c:
 			#pprint.pprint(k.item(i['id']))
