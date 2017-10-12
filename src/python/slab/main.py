@@ -49,6 +49,8 @@ def main(args=None):
 	k = slab.slablib.SQLKeychain(path)
 	password=os.getenv("SLAB_PASSWORD", None)
 	if not password:
+		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
+	if not password:
 		pwpath = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
 		pwpath = os.path.expanduser(pwpath)
 		if os.path.exists(pwpath):
