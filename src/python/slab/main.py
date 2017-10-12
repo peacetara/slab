@@ -34,10 +34,15 @@ def choice(choices):
 	name = fd.name
 	#print("fname:%s" % name)
 	fd.close()
-	out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
-	#str(out).strip().replace('\n','')
-	out = out.rstrip()
-	#print("out:%s" % out)
+
+	try:
+		out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
+		#str(out).strip().replace('\n','')
+		out = out.rstrip()
+		#print("out:%s" % out)
+	except:
+		sys.exit()
+
 	os.unlink(name)
 	return out
 
