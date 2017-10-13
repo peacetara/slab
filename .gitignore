@@ -7,3 +7,5 @@
 **/target/
 **/build/
 **/dist/
+src/rust/
+1p.sqlite
