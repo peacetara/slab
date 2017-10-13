@@ -15,41 +15,45 @@ I plan to eventually re-write this in Rust or maybe Go, but I'm still learning t
 
   1. Firstly, ensure your 1Password sqlite file is in:
 
-		~/Library/Application\ Support/1Password\ 4/Data/
+     `~/Library/Application\ Support/1Password\ 4/Data/`
 
-	and is named `OnePassword.sqlite`
+     and is named `OnePassword.sqlite`
   
-	If it isn't you will need to set an environment variable `SLAB_PATH` to point to your 1Password `sqlite` data file.
+     If it isn't you will need to set an environment variable `SLAB_PATH` to point to your 1Password `sqlite` data file.
 
   2. This version of `slab` needs your 1Password Master Password.
   
-  	You can make it available in any of the following ways:
+     You can make it available in any of the following ways:
   
-	  1. Use MacOS's Keychain Access App:
+     1. Use MacOS's Keychain Access App:
   
-	  	* Create the Entry:
+        * Creating the SLAB Entry in the MacOS Keychain:
 
-			`$ security add-generic-password -a slab -s slab-password -j "1P SLAB Access" -T /usr/bin/security -w`
+           `$ security add-generic-password -a slab -s slab-password -j "1P SLAB Access" -T /usr/bin/security -w`
 
-			If you don't mind your password showing up in your shell `history` you could add it after the `-w` parameter; else the program will prompt you for it.
+           If you don't mind your password showing up in your shell `history` you could add it after the `-w` parameter; else the program will prompt you for it.
 
-		* Update the password in the Keychain App:
+        * Update the password in the Keychain App:
 
-			`$ security add-generic-password -a slab -s slab-password -U -w`
+           `$ security add-generic-password -a slab -s slab-password -U -w`
 
-	  2. You can put it in the environment variable `SLAB_PASSWORD` but that would be *stupid*. Please don't do this...
+     2. You can put it in the environment variable `SLAB_PASSWORD` but that would be *stupid*. Please don't do this...
 
-	  3. Finally you could put it in a file:
+     3. Finally you could put it in a file:
 
-		  `$ echo "MYMASTERPASSWORD" > ~/.config/.slab_password`\
-		  `$ chmod 0400 ~/.config/.slab_password`
+        `$ echo "MYMASTERPASSWORD" > ~/.config/.slab_password`\
+        `$ chmod 0400 ~/.config/.slab_password`
 
-		  if you put it in a different place, then export SLAB_PWPATH to point to it. It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
+     if you put it in a different place, then export SLAB_PWPATH to point to it. It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
 
   3. Configure a keybinding to run coprocess and point it at this binary; something like binding `^\` to `/usr/local/bin/slab`.
 
 ### HOW it works
 
-  This code opens the SQLite data file, filters out only sudolikeaboss entries, builds a list of titles and asks applescript to show you a list of titles to choose from (applescript never sees or interacts with 1password).  After selecting a list, this code then decrypts the 1 entry and outputs the password.
+  This code opens the SQLite data file, filters out only `sudolikeaboss` entries, builds a list of titles and then asks AppleScript to show you a list of titles to choose from.
+  
+  AppleScript never sees, or interacts, directly with 1Password.
+  
+  After selecting an item from the list, this code then decrypts the entry and outputs the password.
 
-  This code *could* do nasty things and decrypt every single secret, since it knows your master password, but I promise it doesn't :P  See src/python/slab/main.py for what it actually does.
+  This code *could* do (very) nasty things and decrypt every single secret, since it knows your master password. I promise it doesn't, but it ***could***. See `src/python/slab/main.py` for what it actually does.
