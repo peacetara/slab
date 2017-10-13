@@ -36,10 +36,15 @@ def choice(choices):
 	name = fd.name
 	#print("fname:%s" % name)
 	fd.close()
-	out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
-	#str(out).strip().replace('\n','')
-	out = out.rstrip()
-	#print("out:%s" % out)
+
+	try:
+		out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
+		#str(out).strip().replace('\n','')
+		out = out.rstrip()
+		#print("out:%s" % out)
+	except:
+		sys.exit()
+
 	os.unlink(name)
 	return out
 
@@ -73,24 +78,47 @@ def main(args=None):
 	"""main code"""
 	path=os.getenv("SLAB_PATH","~/Library/Application Support/1Password 4/Data/OnePassword.sqlite")
 	path=os.path.expanduser(path)
+
 	#print("opening:{}".format(path))
 	k = slab.slablib.SQLKeychain(path)
+
 	password=os.getenv("SLAB_PASSWORD", None)
+	if password:
+		print("You used the SLAB_PASSWORD environment variable... Please consider alternatives!")
+
 	if not password:
-		pwpath = getPWPath()
+		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
+
+	if not password:
+		pwpath = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
+		pwpath = os.path.expanduser(pwpath)
+
 		if os.path.exists(pwpath):
 			mode = os.stat(pwpath).st_mode
+
 			assert mode in (33024,33152) ,"SLAB_PWPATH file must be chmod 0400 or 0600"
+
 			password = open(pwpath).read()
-	k.unlock(password, filter='sudolikeaboss')
+			if '\n' in password:
+				password = password.rstrip()
+
+	try:
+		k.unlock(password, filter='sudolikeaboss')
+	except:
+		print("The password supplied does not unlock 1Password. Aborting.")
+		sys.exit()
+
 	#pprint.pprint(k.items)
 	choices=[]
-	for i in k.items:
-		choices.append(i['title'])
-	#print("choices:%s" % pprint.pformat(choices))
-	#c = ''
-	# use applescript to get a choice.
-	c = choice(choices)
+	if len(k.items) == 1:
+		c = k.items[0]['title']
+	else:
+		for i in k.items:
+			choices.append(i['title'])
+
+		# use applescript to get a choice.
+		c = choice(choices)
+
 	# go through all the sudolikeaboss items and print the password when match found.
 	for i in k.items:
 		if i['title'] == c:
@@ -99,6 +127,7 @@ def main(args=None):
 				if f['designation'] == 'password':
 					print(f['value'])
 					sys.stdout.flush()
+
 	#pprint.pprint(k.item(1421))
 	return 0
 
