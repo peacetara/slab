@@ -105,7 +105,7 @@ def main(args=None):
 		del password
 	except:
 		print("The password supplied does not unlock 1Password. Aborting.")
-		sys.exit()
+		sys.exit(3)
 
 	#pprint.pprint(k.items)
 	choices=[]
