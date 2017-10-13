@@ -5,3 +5,5 @@
 *.sqlite-wal
 **/slab.egg-info
 **/target/
+**/build/
+**/dist/
