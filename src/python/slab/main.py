@@ -56,6 +56,7 @@ def getPWPath():
 
 def pwentry():
 	"""create a secure file for the master password keys.
+	TODO: update this to work with keychain.
 	"""
 	pwpath = getPWPath()
 	try:
@@ -90,9 +91,7 @@ def main(args=None):
 		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
 
 	if not password:
-		pwpath = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
-		pwpath = os.path.expanduser(pwpath)
-
+		pwpath = getPWPath()
 		if os.path.exists(pwpath):
 			mode = os.stat(pwpath).st_mode
 
@@ -101,9 +100,9 @@ def main(args=None):
 			password = open(pwpath).read()
 			if '\n' in password:
 				password = password.rstrip()
-
 	try:
 		k.unlock(password, filter='sudolikeaboss')
+		del password
 	except:
 		print("The password supplied does not unlock 1Password. Aborting.")
 		sys.exit()
