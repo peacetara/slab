@@ -34,10 +34,15 @@ def choice(choices):
 	name = fd.name
 	#print("fname:%s" % name)
 	fd.close()
-	out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
-	#str(out).strip().replace('\n','')
-	out = out.rstrip()
-	#print("out:%s" % out)
+
+	try:
+		out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
+		#str(out).strip().replace('\n','')
+		out = out.rstrip()
+		#print("out:%s" % out)
+	except:
+		sys.exit()
+
 	os.unlink(name)
 	return out
 
@@ -48,6 +53,8 @@ def main(args=None):
 	#print("opening:{}".format(path))
 	k = slab.slablib.SQLKeychain(path)
 	password=os.getenv("SLAB_PASSWORD", None)
+	if not password:
+		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
 	if not password:
 		pwpath = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
 		pwpath = os.path.expanduser(pwpath)
@@ -61,12 +68,17 @@ def main(args=None):
 	k.unlock(password, filter='sudolikeaboss')
 	#pprint.pprint(k.items)
 	choices=[]
-	for i in k.items:
-		choices.append(i['title'])
-	#print("choices:%s" % pprint.pformat(choices))
-	#c = ''
-	# use applescript to get a choice.
-	c = choice(choices)
+	if len(k.items) == 1:
+		c = k.items[0]['title']
+	else:
+		for i in k.items:
+			choices.append(i['title'])
+		#print("choices:%s" % pprint.pformat(choices))
+		#c = ''
+		# use applescript to get a choice.
+		c = choice(choices)
+		print(">>",c)
+
 	# go through all the sudolikeaboss items and print the password when match found.
 	for i in k.items:
 		if i['title'] == c:
