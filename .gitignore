@@ -1,3 +1,7 @@
-.vscode
-.cache
-__pycache__
+.vscode/
+.cache/
+**/__pycache__
+*.sqlite-shm
+*.sqlite-wal
+**/slab.egg-info
+**/target/

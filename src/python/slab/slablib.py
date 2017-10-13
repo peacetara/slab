@@ -94,6 +94,8 @@ class SQLKeychain(_AbstractKeychain):
 		"""unlock the master keychain"""
 		self._profile(profileName)
 		self._loadKeys(password)
+		#delete password since we no longer need it.
+		del password
 		self._categories()
 		self._loadItems(filter)
 		return True
@@ -110,12 +112,12 @@ class SQLKeychain(_AbstractKeychain):
 
 def main(args):
 	"""main code"""
-	path=os.path.expanduser(u'~/src/1p/1p.sqlite')
+	path=os.path.expanduser(u'~/src/1p/OnePassword.sqlite')
 	print("opening:{}".format(path))
 	k = SQLKeychain(path)
-	k.unlock('MYSECRETPASSWORD', filter='sudolikeaboss')
+	k.unlock('test', filter='sudolikeaboss')
 	pprint.pprint(k.items)
-	pprint.pprint(k.item(1421))
+	pprint.pprint(k.item(1))
 	return 0
 
 if __name__ == '__main__':

@@ -38,7 +38,8 @@ setup(
         'slab'
     ],
     entry_points= {
-        'console_scripts':['slab=slab.main:main'],
+        'console_scripts':['slab=slab.main:main','slabpw=slab.main:pwentry'],
+
     },
 
 )

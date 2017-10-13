@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
 """sudolikeaboss crappy replacement.
 """
+import getpass
+import getopt
 import os
 import pprint
 import sys
@@ -41,6 +43,32 @@ def choice(choices):
 	os.unlink(name)
 	return out
 
+def getPWPath():
+	"""get PW path"""
+	path = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
+	path=os.path.expanduser(path)
+	return path
+
+def pwentry():
+	"""create a secure file for the master password keys.
+	"""
+	pwpath = getPWPath()
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "h:v", ["help", "delete"])
+	except getopt.GetoptError as err:
+		print(err)
+		sys.exit(2)
+	if 'delete' in args:
+		os.unlink(pwpath)
+		sys.exit(0)
+	if os.path.exists(pwpath):
+		os.unlink(pwpath)
+	fd = open(pwpath, mode='w')
+	os.chmod(pwpath, 33024)
+	print("This will save your MasterPassword in as secure a file as we can make.")
+	pwd = getpass.getpass()
+	fd.write(pwd)
+
 def main(args=None):
 	"""main code"""
 	path=os.getenv("SLAB_PATH","~/Library/Application Support/1Password 4/Data/OnePassword.sqlite")
@@ -49,15 +77,11 @@ def main(args=None):
 	k = slab.slablib.SQLKeychain(path)
 	password=os.getenv("SLAB_PASSWORD", None)
 	if not password:
-		pwpath = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
-		pwpath = os.path.expanduser(pwpath)
+		pwpath = getPWPath()
 		if os.path.exists(pwpath):
 			mode = os.stat(pwpath).st_mode
 			assert mode in (33024,33152) ,"SLAB_PWPATH file must be chmod 0400 or 0600"
 			password = open(pwpath).read()
-			if '\n' in password:
-				password = password.rstrip()
-
 	k.unlock(password, filter='sudolikeaboss')
 	#pprint.pprint(k.items)
 	choices=[]

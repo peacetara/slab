@@ -18,13 +18,13 @@ SETUP:
 
 	This slab needs your 1Password Master Password.
 	You can put it in the env SLAB_PASSWORD but that would be stupid.
-	the next best thing is to put it in a file
-	something like:
-	echo "MYMASTERPASSWORD" > ~/.config/.slab_password
-	chmod 0400 ~/.config/.slab_password
-	if you put it in a different place, then export SLAB_PWPATH to point to it.
-	it *MUST* be chmod 0400 or 0600, or this code will hate you, loudly.
-
+	the next best thing is to put it in a file:
+		$ slabpw
+	and it will prompt you for the masterpassword and save it to as secure a file as we can make it.
+	It's recommended that when you no longer need to use slab, to delete the file:
+		$ slabpw delete
+	and we will erase the file for you.	
+		Eventually slabpw will do something like gpg-agent, and not store in a file.
 	Configure a keybinding to run coprocess and point it at this binary
 	something like: /usr/local/bin/slab
 
