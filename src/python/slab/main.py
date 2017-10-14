@@ -8,25 +8,25 @@ import pprint
 import sys
 import subprocess
 import tempfile
-
-
 import slab.slablib
 
 SLABSCRIPT="""
-    set SlabList to {}
-	tell me to Activate
+	tell app "System Events"
+		Activate
 
-    set Answer to choose from list SlabList with title "sudolikeaboss"
+		set SlabList to {}
+		set Answer to (choose from list SlabList with title "sudolikeaboss")
 
+		if Answer is false then
+			error number -128 (* user cancelled *)
+		else
+			set Answer to Answer's item 1 (* extract choice from list *)
+		end if
 
-    if Answer is false then
-        error number -128 (* user cancelled *)
-    else
-        set Answer to Answer's item 1 (* extract choice from list *)
-    end if
-
-    return Answer
+		return Answer
+	end tell
 """
+
 def choice(choices):
 	"""give user a choice of items. return selected item"""
 	fd = tempfile.NamedTemporaryFile(delete=False)
