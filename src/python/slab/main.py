@@ -22,7 +22,9 @@ SLABSCRIPT="""
 		else
 			set Answer to Answer's item 1 (* extract choice from list *)
 		end if
-
+	end tell
+	tell app "iTerm2"
+		Activate
 		return Answer
 	end tell
 """
