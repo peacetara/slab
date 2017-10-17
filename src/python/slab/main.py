@@ -105,7 +105,7 @@ def main(args=None):
 	try:
 		k.unlock(password, filter='sudolikeaboss')
 		del password
-	except:
+	except ValueError:
 		print("The password supplied does not unlock 1Password. Aborting.")
 		sys.exit(3)
 
