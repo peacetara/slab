@@ -44,9 +44,9 @@ I plan to eventually re-write this in Rust or maybe Go, but I'm still learning t
         `$ echo "MYMASTERPASSWORD" > ~/.config/.slab_password`\
         `$ chmod 0400 ~/.config/.slab_password`
 
-     if you put it in a different place, then export SLAB_PWPATH to point to it. It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
+     if you put it in a different place, then export `SLAB_PWPATH` to point to it. It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
 
-  3. Configure a keybinding to run coprocess and point it at this binary; something like binding `^\` to `/usr/local/bin/slab`.
+  3. Configure a keybinding to run coprocess and point it at this binary; something like binding `⌘\` to `/usr/local/bin/slab`.
 
 ### HOW it works
 
