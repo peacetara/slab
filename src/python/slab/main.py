@@ -36,14 +36,14 @@ def choice(choices):
 	s = '{ "' + '","'.join(choices) + '" }'
 	fd.write(SLABSCRIPT.format(s).encode('utf-8'))
 	name = fd.name
-	#print("fname:%s" % name)
+	#print("fname:%s" % name, file=sys.stderr)
 	fd.close()
 
 	try:
 		out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
 		#str(out).strip().replace('\n','')
 		out = out.rstrip()
-		#print("out:%s" % out)
+		#print("out:%s" % out, file=sys.stderr)
 	except:
 		sys.exit()
 
@@ -61,16 +61,20 @@ def pwentry():
 	TODO: update this to work with keychain.
 	"""
 	pwpath = getPWPath()
+
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "h:v", ["help", "delete"])
 	except getopt.GetoptError as err:
-		print(err)
+		print(err, file=sys.stderr)
 		sys.exit(2)
+
 	if 'delete' in args:
 		os.unlink(pwpath)
 		sys.exit(0)
+
 	if os.path.exists(pwpath):
 		os.unlink(pwpath)
+
 	fd = open(pwpath, mode='w')
 	os.chmod(pwpath, 33024)
 	print("This will save your MasterPassword in as secure a file as we can make.")
@@ -79,15 +83,24 @@ def pwentry():
 
 def main(args=None):
 	"""main code"""
+
+	if os.uname().sysname != 'Darwin':
+		print("Sorry, this currently only runs on macOS", file=sys.stderr)
+		sys.exit(3)
+
 	path=os.getenv("SLAB_PATH","~/Library/Application Support/1Password 4/Data/OnePassword.sqlite")
 	path=os.path.expanduser(path)
 
-	#print("opening:{}".format(path))
-	k = slab.slablib.SQLKeychain(path)
+	#print("opening:{}".format(path), file=sys.stderr)
+	try:
+		k = slab.slablib.SQLKeychain(path)
+	except:
+		print("We are unable to open the 1Password database file", file=sys.stderr)
+		sys.exit(3)
 
 	password=os.getenv("SLAB_PASSWORD", None)
 	if password:
-		print("You used the SLAB_PASSWORD environment variable... Please consider alternatives!")
+		print("You used the SLAB_PASSWORD environment variable... Please consider alternatives!", file=sys.stderr)
 
 	if not password:
 		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
@@ -106,7 +119,7 @@ def main(args=None):
 		k.unlock(password, filter='sudolikeaboss')
 		del password
 	except ValueError:
-		print("The password supplied does not unlock 1Password. Aborting.")
+		print("The password supplied does not unlock 1Password", file=sys.stderr)
 		sys.exit(3)
 
 	#pprint.pprint(k.items)
