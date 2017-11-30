@@ -1,9 +1,7 @@
-sudolikeaboss(https://github.com/ravenac95/sudolikeaboss) replacement.
+`slab` is a [sudolikeaboss](https://github.com/ravenac95/sudolikeaboss) replacement; and sudolikeaboss is a 1Password utility to interact with iTerm2 and type in your (speacially defined) Login passwords in your Terminal session for you.
 
-sudolikeaboss is a 1Password utility to interact with iTerm2 and type in your passwords for you. 
+This code talks directly to your 1Password local vault (SQLite data file) and works with 1Password > 6.8.0. It has been tested up to version 6.8.4 so far, but it should be pretty stable to new versions. Please do file an "Issue" if you run into any problems.
 
-This code talks directly to your 1Password local vault(SQLite data file) and works with 1Password > 6.8.0. Tested up to 6.8.3 so far - but should be pretty stable to new versions. File an issue if you run into issues.
+Currently only the python version works, [see the README](https://github.com/peacetara/slab/blob/master/src/python/README.md) for more.
 
-Currently only the python version works, see src/python/README.md (https://github.com/peacetara/slab/blob/master/src/python/README.md)
-
-I plan to eventually re-write this in Rust or maybe Go, but I'm still learning those languages, and I needed a replacement *NOW*.  re-writes accepted as pull-requests! :)
+I plan to eventually re-write this in Rust, or maybe Go, but I'm still learning those languages, and I needed a replacement *NOW*. Re-writes accepted as pull-requests! :)
