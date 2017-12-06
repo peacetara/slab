@@ -46,11 +46,15 @@ class SQLKeychain(_AbstractKeychain):
 			for c in r:
 				self.categories.append((c['id'], c['singular_name']))
 	def _loadKeys(self, password):
-		super_master_key, super_hmac_key = crypt_util.opdata1_derive_keys(
+		try:
+			super_master_key, super_hmac_key = crypt_util.opdata1_derive_keys(
 			password,
 			self.profile['salt'],
 			self.profile['iterations']
 		)
+		except TypeError:
+			print("You are probably using an online vault, try https://github.com/tomvachon/dpaf otherwise file an issue.")
+			raise
 		#clean up the master password since we no longer need it.
 		del password
 		self.master_key, self.master_hmac = crypt_util.opdata1_decrypt_master_key(
