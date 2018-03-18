@@ -9,3 +9,5 @@
 **/dist/
 src/rust/
 1p.sqlite
+.DS_Store
+*.pyc
