@@ -1,0 +1,15 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+simplejson = ">=2.1.0"
+cryptography = ">=0.9.3"
+
+
+[dev-packages]
+

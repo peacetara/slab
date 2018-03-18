@@ -129,7 +129,7 @@ def main(args=None):
 	else:
 		for i in k.items:
 			choices.append(i['title'])
-
+		choices.sort()
 		# use applescript to get a choice.
 		c = choice(choices)
 
