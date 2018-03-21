@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import slab.slablib
 
-SLABSCRIPT="""
+SLABSCRIPT = """
 	tell app "System Events"
 		Activate
 
@@ -29,121 +29,157 @@ SLABSCRIPT="""
 	end tell
 """
 
+def appleScriptChooser(choices):
+    """give user a choice of items. return selected item"""
+    fd = tempfile.NamedTemporaryFile(delete=False)
+    #choices = ['a','b','c']
+    s = '{ "' + '","'.join(choices) + '" }'
+    fd.write(SLABSCRIPT.format(s).encode('utf-8'))
+    name = fd.name
+    #print("fname:%s" % name, file=sys.stderr)
+    fd.close()
+
+    try:
+        out = subprocess.check_output(
+            ['/usr/bin/osascript', name], universal_newlines=True)
+        #str(out).strip().replace('\n','')
+        out = out.rstrip()
+        #print("out:%s" % out, file=sys.stderr)
+    except:
+        sys.exit()
+
+    os.unlink(name)
+    return out
+
+def chooseGUIChooser(choices):
+    """use choose gui for choices
+    https://github.com/sdegutis/choose
+    """
+    try:
+        out = subprocess.run(['/usr/local/bin/choose'], stdout=subprocess.PIPE, input='\n'.join(choices), universal_newlines=True)
+    except:
+        sys.exit()
+    return out.stdout.strip()
+
+
 def choice(choices):
-	"""give user a choice of items. return selected item"""
-	fd = tempfile.NamedTemporaryFile(delete=False)
-	#choices = ['a','b','c']
-	s = '{ "' + '","'.join(choices) + '" }'
-	fd.write(SLABSCRIPT.format(s).encode('utf-8'))
-	name = fd.name
-	#print("fname:%s" % name, file=sys.stderr)
-	fd.close()
-
-	try:
-		out = subprocess.check_output(['/usr/bin/osascript',name],universal_newlines=True)
-		#str(out).strip().replace('\n','')
-		out = out.rstrip()
-		#print("out:%s" % out, file=sys.stderr)
-	except:
-		sys.exit()
-
-	os.unlink(name)
-	return out
+    """give user a choice of items, return selected item
+    if choose-gui is installed, use that, otherwise fall back to applescript
+    """
+    if os.path.exists('/usr/local/bin/choose'):
+        return chooseGUIChooser(choices)
+    else:
+        return appleScriptChooser(choices)
 
 def getPWPath():
-	"""get PW path"""
-	path = os.getenv("SLAB_PWPATH","~/.config/.slab_password")
-	path=os.path.expanduser(path)
-	return path
+    """get PW path"""
+    path = os.getenv("SLAB_PWPATH", "~/.config/.slab_password")
+    path = os.path.expanduser(path)
+    return path
+
 
 def pwentry():
-	"""create a secure file for the master password keys.
+    """create a secure file for the master password keys.
 	TODO: update this to work with keychain.
 	"""
-	pwpath = getPWPath()
+    pwpath = getPWPath()
 
-	try:
-		opts, args = getopt.getopt(sys.argv[1:], "h:v", ["help", "delete"])
-	except getopt.GetoptError as err:
-		print(err, file=sys.stderr)
-		sys.exit(2)
+    try:
+        _, args = getopt.getopt(sys.argv[1:], "h:v", ["help", "delete"])
+    except getopt.GetoptError as err:
+        print(err, file=sys.stderr)
+        sys.exit(2)
 
-	if 'delete' in args:
-		os.unlink(pwpath)
-		sys.exit(0)
+    if 'delete' in args:
+        os.unlink(pwpath)
+        sys.exit(0)
 
-	if os.path.exists(pwpath):
-		os.unlink(pwpath)
+    if os.path.exists(pwpath):
+        os.unlink(pwpath)
 
-	fd = open(pwpath, mode='w')
-	os.chmod(pwpath, 33024)
-	print("This will save your MasterPassword in as secure a file as we can make.")
-	pwd = getpass.getpass()
-	fd.write(pwd)
+    fd = open(pwpath, mode='w')
+    os.chmod(pwpath, 33024)
+    print(
+        "This will save your MasterPassword in as secure a file as we can make."
+    )
+    pwd = getpass.getpass()
+    fd.write(pwd)
+
 
 def main(args=None):
-	"""main code"""
+    """main code"""
 
-	if os.uname().sysname != 'Darwin':
-		print("Sorry, this currently only runs on macOS", file=sys.stderr)
-		sys.exit(3)
+    if os.uname().sysname != 'Darwin':
+        print("Sorry, this currently only runs on macOS", file=sys.stderr)
+        sys.exit(3)
 
-	path=os.getenv("SLAB_PATH","~/Library/Application Support/1Password 4/Data/OnePassword.sqlite")
-	path=os.path.expanduser(path)
+    path = os.getenv(
+        "SLAB_PATH",
+        "~/Library/Application Support/1Password 4/Data/OnePassword.sqlite")
+    path = os.path.expanduser(path)
 
-	#print("opening:{}".format(path), file=sys.stderr)
-	try:
-		k = slab.slablib.SQLKeychain(path)
-	except:
-		print("We are unable to open the 1Password database file", file=sys.stderr)
-		sys.exit(3)
+    #print("opening:{}".format(path), file=sys.stderr)
+    try:
+        k = slab.slablib.SQLKeychain(path)
+    except:
+        print(
+            "We are unable to open the 1Password database file",
+            file=sys.stderr)
+        sys.exit(3)
 
-	password=os.getenv("SLAB_PASSWORD", None)
-	if password:
-		print("You used the SLAB_PASSWORD environment variable... Please consider alternatives!", file=sys.stderr)
+    password = os.getenv("SLAB_PASSWORD", None)
+    if password:
+        print(
+            "You used the SLAB_PASSWORD environment variable... Please consider alternatives!",
+            file=sys.stderr)
 
-	if not password:
-		password = subprocess.check_output(['/usr/bin/security','find-generic-password','-a','slab','-w'],universal_newlines=True).rstrip()
+    if not password:
+        password = subprocess.check_output(
+            ['/usr/bin/security', 'find-generic-password', '-a', 'slab', '-w'],
+            universal_newlines=True).rstrip()
 
-	if not password:
-		pwpath = getPWPath()
-		if os.path.exists(pwpath):
-			mode = os.stat(pwpath).st_mode
+    if not password:
+        pwpath = getPWPath()
+        if os.path.exists(pwpath):
+            mode = os.stat(pwpath).st_mode
 
-			assert mode in (33024,33152) ,"SLAB_PWPATH file must be chmod 0400 or 0600"
+            assert mode in (
+                33024, 33152), "SLAB_PWPATH file must be chmod 0400 or 0600"
 
-			password = open(pwpath).read()
-			if '\n' in password:
-				password = password.rstrip()
-	try:
-		k.unlock(password, filter='sudolikeaboss')
-		del password
-	except ValueError:
-		print("The password supplied does not unlock 1Password", file=sys.stderr)
-		sys.exit(3)
+            password = open(pwpath).read()
+            if '\n' in password:
+                password = password.rstrip()
+    try:
+        k.unlock(password, filter='sudolikeaboss')
+        del password
+    except ValueError:
+        print(
+            "The password supplied does not unlock 1Password", file=sys.stderr)
+        sys.exit(3)
 
-	#pprint.pprint(k.items)
-	choices=[]
-	if len(k.items) == 1:
-		c = k.items[0]['title']
-	else:
-		for i in k.items:
-			choices.append(i['title'])
-		choices.sort()
-		# use applescript to get a choice.
-		c = choice(choices)
+    #pprint.pprint(k.items)
+    choices = []
+    if len(k.items) == 1:
+        c = k.items[0]['title']
+    else:
+        for i in k.items:
+            choices.append(i['title'])
+        choices.sort()
+        # use applescript to get a choice.
+        c = choice(choices)
 
-	# go through all the sudolikeaboss items and print the password when match found.
-	for i in k.items:
-		if i['title'] == c:
-			#pprint.pprint(k.item(i['id']))
-			for f in k.item(i['id'])['details']['fields']:
-				if f['designation'] == 'password':
-					print(f['value'])
-					sys.stdout.flush()
+    # go through all the sudolikeaboss items and print the password when match found.
+    for i in k.items:
+        if i['title'] == c:
+            #pprint.pprint(k.item(i['id']))
+            for f in k.item(i['id'])['details']['fields']:
+                if f['designation'] == 'password':
+                    print(f['value'])
+                    sys.stdout.flush()
 
-	#pprint.pprint(k.item(1421))
-	return 0
+    #pprint.pprint(k.item(1421))
+    return 0
+
 
 if __name__ == '__main__':
-	sys.exit(main(sys.argv))
+    sys.exit(main(sys.argv))

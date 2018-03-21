@@ -5,7 +5,6 @@ All the hard bits are done by the `onepasswordpy` library, the source for that i
 This replacement for `sudolikeaboss` talks directly to the 1Password SQLITE data file.
 It only ever reads from the SQLITE database, and it can run side-by-side with a running unlocked copy of 1Password.
 
-I plan to eventually re-write this in Rust or maybe Go, but I'm still learning those languages, and I wanted a replacement *NOW*...
 
 ### INSTALL
 
@@ -37,14 +36,12 @@ I plan to eventually re-write this in Rust or maybe Go, but I'm still learning t
 
            `$ security add-generic-password -a slab -s slab-password -U -w`
 
-     2. You can put it in the environment variable `SLAB_PASSWORD` but that would be *stupid*. Please don't do this...
-
-     3. Finally you could put it in a file:
+     2. you could put it in a file:
 
         `$ echo "MYMASTERPASSWORD" > ~/.config/.slab_password`\
         `$ chmod 0400 ~/.config/.slab_password`
 
-     if you put it in a different place, then export `SLAB_PWPATH` to point to it. It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
+     It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
 
   3. Configure a keybinding to run coprocess and point it at this binary; something like binding `⌘\` to `/usr/local/bin/slab`.
 
@@ -52,7 +49,9 @@ I plan to eventually re-write this in Rust or maybe Go, but I'm still learning t
 
   This code opens the SQLite data file, filters out only `sudolikeaboss` entries, builds a list of titles and then asks AppleScript to show you a list of titles to choose from.
   
-  AppleScript never sees, or interacts, directly with 1Password.
+  The Chooser never sees your passwords, or interacts, directly with 1Password.
+
+  If you have choose installed (https://github.com/sdegutis/choose) @ /usr/local/bin it will use that instead of Applescript.
   
   After selecting an item from the list, this code then decrypts the entry and outputs the password.
 
