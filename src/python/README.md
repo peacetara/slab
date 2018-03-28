@@ -8,13 +8,24 @@ It only ever reads from the SQLITE database, and it can run side-by-side with a 
 
 ### INSTALL
 
-  `$ sudo python3 setup.py install`
+```
+  $ sudo python3 setup.py install
+```
+
+if you are using OpsnSSL on a newer macOS system where it has been deperecated in favor of the built-in SSL libraries; you can use the following invocation after a `brew install openssl` (assuming you have not installed Homebrew's OpenSSL already):
+
+```
+  $ sudo -s  
+  # LDFLAGS=-L/usr/local/opt/openssl/lib CPPFLAGS=-I/usr/local/opt/openssl/include python3 setup.py install
+```
 
 ### SETUP
 
   1. Firstly, ensure your 1Password sqlite file is in:
 
-     `~/Library/Application\ Support/1Password\ 4/Data/`
+     ```
+     ~/Library/Application\ Support/1Password\ 4/Data/
+     ```
 
      and is named `OnePassword.sqlite`
   
@@ -28,18 +39,24 @@ It only ever reads from the SQLITE database, and it can run side-by-side with a 
   
         * Creating the SLAB Entry in the MacOS Keychain:
 
-           `$ security add-generic-password -a slab -s slab-password -j "1P SLAB Access" -T /usr/bin/security -w`
+           ```
+           $ security add-generic-password -a slab -s slab-password -j "1P SLAB Access" -T /usr/bin/security -w
+           ```
 
            If you don't mind your password showing up in your shell `history` you could add it after the `-w` parameter; else the program will prompt you for it.
 
         * Update the password in the Keychain App:
 
-           `$ security add-generic-password -a slab -s slab-password -U -w`
+           ```
+           $ security add-generic-password -a slab -s slab-password -U -w
+           ```
 
      2. you could put it in a file:
 
-        `$ echo "MYMASTERPASSWORD" > ~/.config/.slab_password`\
-        `$ chmod 0400 ~/.config/.slab_password`
+        ```
+        $ echo "MYMASTERPASSWORD" > ~/.config/.slab_password
+        $ chmod 0400 ~/.config/.slab_password
+        ```
 
      It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
 
