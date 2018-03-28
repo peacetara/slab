@@ -60,7 +60,7 @@ if you are using OpsnSSL on a newer macOS system where it has been deperecated i
 
      It ***must*** be `chmod` either 0400 (owner read *only*) or 0600 (owner read/write *only*), or this code will complain bitterly.
 
-  3. Configure a keybinding to run coprocess and point it at this binary; something like binding `⌘\` to `/usr/local/bin/slab`.
+  3. Configure a keybinding to run an [iTerm](https://www.iterm2.com) coprocess, and point it at this binary; something like binding `⌘\` to `/usr/local/bin/slab`.
 
 ### HOW it works
 
