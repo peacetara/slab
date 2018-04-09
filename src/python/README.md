@@ -1,4 +1,6 @@
-This is a very basic and maybe not secure way to replace sudolikeaboss for 1Password > 6.8.0
+This replaces sudolikeaboss for 1Password > 6.8.0
+
+This code is in maintenance mode and planned support through the rest of 2018.  I personally am moving to Bitwarden. Agile bits has claimed to replace this functionality, but the latest v7 release apparently doesn't. boo hiss Agile bits. boo hiss.
 
 All the hard bits are done by the `onepasswordpy` library, the source for that is included directly here. Please see `onepassword/LICENSE.txt` for the license.
 
