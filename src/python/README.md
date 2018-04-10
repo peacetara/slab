@@ -1,14 +1,22 @@
-This replaces sudolikeaboss for 1Password > 6.8.0
+### NOTE
 
-This code is in maintenance mode and planned support through the rest of 2018.  I personally am moving to Bitwarden (https://www.bitwarden.com) and CLI (https://fossil.birl.ca/bitwarden-cli/home) both are Open source (OSS). Agile bits has claimed to replace this functionality, but the latest v7 release apparently doesn't. boo hiss Agile bits. boo hiss.
+This code is in maintenance mode and we are planning to support it on 1Password 6.8.x through the rest of 2018.
 
-Other options: enpass (http://enpass.io/) (not OSS but uses sqlcipher and is offline.) Password Store (https://www.passwordstore.org/) (OSS)
+I, [peacetara](https://github.com/peacetara), have moved to [Bitwarden](https://www.bitwarden.com) and accompanying [CLI](https://fossil.birl.ca/bitwarden-cli/home); both of which are Open Source.
+
+**Other Options**
+
+1. Closed Source [Enpass](http://enpass.io/) and accompanying Open Source [CLI](https://github.com/HazCod/enpass-cli) which [jabofh](https://github.com/jabofh) has moved to. While Enpass is Closed Source, it does use `sqlcipher` and is offline.
+2. [Password Store](https://www.passwordstore.org/) which is an interesting take on the problem. Open Source and completely CLI based.
+
+### ABOUT
+
+This replaces `sudolikeaboss` for 1Password > 6.8.0. Agilebits has claimed to replace this functionality, but the latest v7 release of 1Password apparently still does not. boo hiss Agilebits. boo hiss.
 
 All the hard bits are done by the `onepasswordpy` library, the source for that is included directly here. Please see `onepassword/LICENSE.txt` for the license.
 
 This replacement for `sudolikeaboss` talks directly to the 1Password SQLITE data file.
 It only ever reads from the SQLITE database, and it can run side-by-side with a running unlocked copy of 1Password.
-
 
 ### INSTALL
 
