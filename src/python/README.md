@@ -7,7 +7,7 @@ I, [peacetara](https://github.com/peacetara), have moved to [Bitwarden](https://
 **Other Options**
 
 1. Closed Source [Enpass](http://enpass.io/) and accompanying Open Source [CLI](https://github.com/HazCod/enpass-cli) which [jabofh](https://github.com/jabofh) has moved to. While Enpass is Closed Source, it does use `sqlcipher` and is offline.
-2. [Password Store](https://www.passwordstore.org/) which is an interesting take on the problem. Open Source and completely CLI based.
+2. [Password Store](https://www.passwordstore.org/) which is an interesting take on the problem. Open Source and completely CLI based (but with GUI front-ends available as add-ons).
 
 ### ABOUT
 
