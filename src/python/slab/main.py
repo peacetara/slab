@@ -173,7 +173,7 @@ def main(args=None):
         if i['title'] == c:
             #pprint.pprint(k.item(i['id']))
             for f in k.item(i['id'])['details']['fields']:
-                if f['designation'] == 'password':
+                if 'designation' in f and f['designation'] == 'password':
                     print(f['value'])
                     sys.stdout.flush()
 
