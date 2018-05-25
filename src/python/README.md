@@ -1,6 +1,6 @@
 ### NOTE
 
-This code is in maintenance mode and we are planning to support it on 1Password 6.8.x through the rest of 2018.
+This code is in maintenance mode and we are planning to support it on 1Password 6.8.x through the rest of 2018.  This code does not work under 1Password 7 at this time.  Patches welcome.
 
 I, [peacetara](https://github.com/peacetara), have moved to [Bitwarden](https://www.bitwarden.com) and accompanying [CLI](https://fossil.birl.ca/bitwarden-cli/home); both of which are Open Source.
 
