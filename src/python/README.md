@@ -76,7 +76,7 @@ if you are using OpsnSSL on a newer macOS system where it has been deperecated i
 
 ### HOW it works
 
-  This code opens the SQLite data file, filters out only `sudolikeaboss` entries, builds a list of titles and then asks a chooser to show you a list of titles to choose from.
+  This code opens the SQLite data file, filters out only `sudolikeaboss` entries (URL: 'sudolikeaboss://local'), builds a list of titles and then asks a chooser to show you a list of titles to choose from.
   
   The Chooser never sees your passwords, or interacts, directly with 1Password.
 
