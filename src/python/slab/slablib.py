@@ -72,10 +72,10 @@ class SQLKeychain(_AbstractKeychain):
 		we can apply a 'filter', so far we only support 'sudolikeaboss'
 		which will only load overview items that are sudolikeaboss items.
 		"""
-		q = """select distinct i.id, c.singular_name as category, i.overview_data from items i, categories c where c.id = i.category_id and not i.trashed order by i.id;"""
+		q = """select distinct i.id, c.singular_name as category, i.overview_data from items i, categories c where c.id = i.category_id and not i.trashed and i.profile_id=? order by i.id;"""
 		self.items = []
 		with self.conn:
-			r = self.conn.execute(q)
+			r = self.conn.execute(q, (self.profile['id'],))
 			for i in r:
 				o = self.decrypt_overview(i['overview_data'])
 				#u = self.decrypt_overview(i['url_data'])
